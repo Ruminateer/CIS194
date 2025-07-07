@@ -33,7 +33,7 @@ doubleEveryOtherLeft (x : y : zs) = x : y + y : doubleEveryOtherLeft zs
 doubleEveryOtherLeft l = l
 
 doubleEveryOther :: [Integer] -> [Integer]
-doubleEveryOther l = reverse (doubleEveryOtherLeft (reverse l))
+doubleEveryOther = reverse . doubleEveryOtherLeft . reverse
 
 testDoubleEveryOther :: Test
 testDoubleEveryOther =
@@ -46,10 +46,14 @@ testDoubleEveryOther =
     ]
 
 sumDigits :: [Integer] -> Integer
-sumDigits l = sum (map (sum . toDigitsRev) l)
+sumDigits = sum . map (sum . toDigitsRev)
 
 testSumDigits :: Test
-testSumDigits = TestCase (assertEqual "sumDigits [16, 7, 12, 5]" 22 (sumDigits [16, 7, 12, 5]))
+testSumDigits =
+  TestList
+    [ TestCase (assertEqual "sumDigits [16, 7, 12, 5]" 22 (sumDigits [16, 7, 12, 5])),
+      TestCase (assertEqual "sumDigits []" 0 (sumDigits []))
+    ]
 
 validate :: Integer -> Bool
 validate n = mod (sumDigits (doubleEveryOtherLeft (toDigitsRev n))) 10 == 0
