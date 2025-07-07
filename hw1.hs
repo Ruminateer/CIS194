@@ -50,3 +50,13 @@ sumDigits l = sum (map (sum . toDigitsRev) l)
 
 testSumDigits :: Test
 testSumDigits = TestCase (assertEqual "sumDigits [16, 7, 12, 5]" 22 (sumDigits [16, 7, 12, 5]))
+
+validate :: Integer -> Bool
+validate n = mod (sumDigits (doubleEveryOtherLeft (toDigitsRev n))) 10 == 0
+
+testValidate :: Test
+testValidate =
+  TestList
+    [ TestCase (assertBool "validate 4012888888881881" (validate 4012888888881881)),
+      TestCase (assertBool "not (validate 4012888888881882)" (not (validate 4012888888881882)))
+    ]
