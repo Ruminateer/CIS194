@@ -44,3 +44,9 @@ testDoubleEveryOther =
       TestCase (assertEqual "doubleEveryOther [9]" [9] (doubleEveryOther [9])),
       TestCase (assertEqual "doubleEveryOther []" [] (doubleEveryOther []))
     ]
+
+sumDigits :: [Integer] -> Integer
+sumDigits l = sum (map (sum . toDigitsRev) l)
+
+testSumDigits :: Test
+testSumDigits = TestCase (assertEqual "sumDigits [16, 7, 12, 5]" 22 (sumDigits [16, 7, 12, 5]))
