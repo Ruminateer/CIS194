@@ -27,3 +27,20 @@ testToDigits =
       TestCase (assertEqual "toDigits 1" [1] (toDigits 1)),
       TestCase (assertEqual "toDigits (-1)" [] (toDigits (-1)))
     ]
+
+doubleEveryOtherLeft :: [Integer] -> [Integer]
+doubleEveryOtherLeft (x : y : zs) = x : y + y : doubleEveryOtherLeft zs
+doubleEveryOtherLeft l = l
+
+doubleEveryOther :: [Integer] -> [Integer]
+doubleEveryOther l = reverse (doubleEveryOtherLeft (reverse l))
+
+testDoubleEveryOther :: Test
+testDoubleEveryOther =
+  TestList
+    [ TestCase (assertEqual "doubleEveryOther [8, 7, 6, 5]" [16, 7, 12, 5] (doubleEveryOther [8, 7, 6, 5])),
+      TestCase (assertEqual "doubleEveryOther [1, 2, 3]" [1, 4, 3] (doubleEveryOther [1, 2, 3])),
+      TestCase (assertEqual "doubleEveryOther [5, 6]" [10, 6] (doubleEveryOther [5, 6])),
+      TestCase (assertEqual "doubleEveryOther [9]" [9] (doubleEveryOther [9])),
+      TestCase (assertEqual "doubleEveryOther []" [] (doubleEveryOther []))
+    ]
