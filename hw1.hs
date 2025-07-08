@@ -64,3 +64,19 @@ testValidate =
     [ TestCase (assertBool "validate 4012888888881881" (validate 4012888888881881)),
       TestCase (assertBool "not (validate 4012888888881882)" (not (validate 4012888888881882)))
     ]
+
+type Peg = String
+
+type Move = (Peg, Peg)
+
+hanoi :: Integer -> Peg -> Peg -> Peg -> [Move]
+hanoi 0 a b c = []
+hanoi n a b c = hanoi (n - 1) a c b ++ [(a, b)] ++ hanoi (n - 1) c b a
+
+testHanoi :: Test
+testHanoi =
+  TestList
+    [ TestCase (assertEqual "hanoi 2 a b c" [("a", "c"), ("a", "b"), ("c", "b")] (hanoi 2 "a" "b" "c")),
+      TestCase (assertEqual "hanoi 1 x y z" [("x", "y")] (hanoi 1 "x" "y" "z")),
+      TestCase (assertEqual "hanoi 0 i j k" [] (hanoi 0 "i" "j" "k"))
+    ]
