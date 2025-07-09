@@ -1,16 +1,8 @@
-{-# OPTIONS_GHC -Wall #-}
+module Hw2Test where
 
-module LogAnalysis where
-
-import Log
+import Hw2.Log
+import Hw2.LogAnalysis
 import Test.HUnit
-
-parseMessage :: String -> LogMessage
-parseMessage s = case words s of
-  ("E" : severity : t : msg) -> LogMessage (Error (read severity)) (read t) (unwords msg)
-  ("I" : t : msg) -> LogMessage Info (read t) (unwords msg)
-  ("W" : t : msg) -> LogMessage Warning (read t) (unwords msg)
-  _ -> Unknown s
 
 testParseMessage :: Test
 testParseMessage =
@@ -33,4 +25,10 @@ testParseMessage =
             (Unknown "This is not in the right format")
             (parseMessage "This is not in the right format")
         )
+    ]
+
+testAll :: Test
+testAll =
+  TestList
+    [ testParseMessage
     ]

@@ -1,9 +1,8 @@
-import Test.HUnit
+module Hw1Test where
 
-toDigitsRev :: Integer -> [Integer]
-toDigitsRev n
-  | n <= 0 = []
-  | otherwise = mod n 10 : toDigitsRev (div n 10)
+import Hw1.CreditCardValidator
+import Hw1.Hanoi
+import Test.HUnit
 
 testToDigitsRev :: Test
 testToDigitsRev =
@@ -15,9 +14,6 @@ testToDigitsRev =
       TestCase (assertEqual "toDigitsRev (-1)" [] (toDigitsRev (-1)))
     ]
 
-toDigits :: Integer -> [Integer]
-toDigits n = reverse (toDigitsRev n)
-
 testToDigits :: Test
 testToDigits =
   TestList
@@ -27,13 +23,6 @@ testToDigits =
       TestCase (assertEqual "toDigits 1" [1] (toDigits 1)),
       TestCase (assertEqual "toDigits (-1)" [] (toDigits (-1)))
     ]
-
-doubleEveryOtherLeft :: [Integer] -> [Integer]
-doubleEveryOtherLeft (x : y : zs) = x : y + y : doubleEveryOtherLeft zs
-doubleEveryOtherLeft l = l
-
-doubleEveryOther :: [Integer] -> [Integer]
-doubleEveryOther = reverse . doubleEveryOtherLeft . reverse
 
 testDoubleEveryOther :: Test
 testDoubleEveryOther =
@@ -45,18 +34,12 @@ testDoubleEveryOther =
       TestCase (assertEqual "doubleEveryOther []" [] (doubleEveryOther []))
     ]
 
-sumDigits :: [Integer] -> Integer
-sumDigits = sum . map (sum . toDigitsRev)
-
 testSumDigits :: Test
 testSumDigits =
   TestList
     [ TestCase (assertEqual "sumDigits [16, 7, 12, 5]" 22 (sumDigits [16, 7, 12, 5])),
       TestCase (assertEqual "sumDigits []" 0 (sumDigits []))
     ]
-
-validate :: Integer -> Bool
-validate n = mod (sumDigits (doubleEveryOtherLeft (toDigitsRev n))) 10 == 0
 
 testValidate :: Test
 testValidate =
@@ -65,18 +48,21 @@ testValidate =
       TestCase (assertBool "not (validate 4012888888881882)" (not (validate 4012888888881882)))
     ]
 
-type Peg = String
-
-type Move = (Peg, Peg)
-
-hanoi :: Integer -> Peg -> Peg -> Peg -> [Move]
-hanoi 0 a b c = []
-hanoi n a b c = hanoi (n - 1) a c b ++ [(a, b)] ++ hanoi (n - 1) c b a
-
 testHanoi :: Test
 testHanoi =
   TestList
     [ TestCase (assertEqual "hanoi 2 a b c" [("a", "c"), ("a", "b"), ("c", "b")] (hanoi 2 "a" "b" "c")),
       TestCase (assertEqual "hanoi 1 x y z" [("x", "y")] (hanoi 1 "x" "y" "z")),
       TestCase (assertEqual "hanoi 0 i j k" [] (hanoi 0 "i" "j" "k"))
+    ]
+
+testAll :: Test
+testAll =
+  TestList
+    [ testToDigitsRev,
+      testToDigits,
+      testDoubleEveryOther,
+      testSumDigits,
+      testValidate,
+      testHanoi
     ]
