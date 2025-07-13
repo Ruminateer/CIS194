@@ -91,4 +91,6 @@ test-suite CIS194-test
     build-depends:
         HUnit ^>=1.6.2.0,
         base ^>=4.18.3.0,
+        test-framework,
+        test-framework-hunit,
         CIS194

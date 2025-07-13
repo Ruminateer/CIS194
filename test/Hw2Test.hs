@@ -27,8 +27,65 @@ testParseMessage =
         )
     ]
 
+sampleTree :: MessageTree
+sampleTree =
+  Node
+    ( Node
+        (Node Leaf (LogMessage Warning 2 "t=2") Leaf)
+        (LogMessage Warning 3 "t=3")
+        Leaf
+    )
+    (LogMessage Info 5 "t=5")
+    ( Node
+        Leaf
+        (LogMessage (Error 0) 8 "t=8")
+        (Node Leaf (LogMessage (Error 0) 11 "t=11") Leaf)
+    )
+
+testInsert :: Test
+testInsert =
+  TestList
+    [ TestCase
+        ( assertEqual
+            "insert Unknown to leaf"
+            Leaf
+            (insert (Unknown "garbage msg") Leaf)
+        ),
+      TestCase
+        ( assertEqual
+            "insert Unknown to sampleTree"
+            sampleTree
+            (insert (Unknown "garbage msg") sampleTree)
+        ),
+      TestCase
+        ( assertEqual
+            "insert time=6 to leaf"
+            (Node Leaf (LogMessage Info 6 "time=6") Leaf)
+            (insert (LogMessage Info 6 "time=6") Leaf)
+        ),
+      TestCase
+        ( assertEqual
+            "insert time=6 to sampleTree"
+            ( Node
+                ( Node
+                    (Node Leaf (LogMessage Warning 2 "t=2") Leaf)
+                    (LogMessage Warning 3 "t=3")
+                    Leaf
+                )
+                (LogMessage Info 5 "t=5")
+                ( Node
+                    (Node Leaf (LogMessage Info 6 "time=6") Leaf)
+                    (LogMessage (Error 0) 8 "t=8")
+                    (Node Leaf (LogMessage (Error 0) 11 "t=11") Leaf)
+                )
+            )
+            (insert (LogMessage Info 6 "time=6") sampleTree)
+        )
+    ]
+
 testAll :: Test
 testAll =
   TestList
-    [ testParseMessage
+    [ TestLabel "test parseMessage" testParseMessage,
+      TestLabel "test insert" testInsert
     ]

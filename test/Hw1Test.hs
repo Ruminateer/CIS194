@@ -59,10 +59,10 @@ testHanoi =
 testAll :: Test
 testAll =
   TestList
-    [ testToDigitsRev,
-      testToDigits,
-      testDoubleEveryOther,
-      testSumDigits,
-      testValidate,
-      testHanoi
+    [ TestLabel "test toDigitsRev" testToDigitsRev,
+      TestLabel "test toDigits" testToDigits,
+      TestLabel "test doubleEveryOther" testDoubleEveryOther,
+      TestLabel "test sumDigits" testSumDigits,
+      TestLabel "test validate" testValidate,
+      TestLabel "test hanoi" testHanoi
     ]

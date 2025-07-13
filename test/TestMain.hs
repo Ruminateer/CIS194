@@ -2,12 +2,15 @@ module Main (main) where
 
 import Hw1Test
 import Hw2Test
+import Test.Framework (defaultMain)
+import Test.Framework.Providers.HUnit (hUnitTestToTests)
 import Test.HUnit
 
-main :: IO Counts
+main :: IO ()
 main =
-  runTestTT $
-    TestList
-      [ Hw1Test.testAll,
-        Hw2Test.testAll
-      ]
+  defaultMain $
+    hUnitTestToTests $
+      TestList
+        [ TestLabel "Hw1Test" Hw1Test.testAll,
+          TestLabel "Hw2Test" Hw2Test.testAll
+        ]
