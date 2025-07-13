@@ -1,5 +1,3 @@
-{-# OPTIONS_GHC -Wall #-}
-
 module Hw2.LogAnalysis where
 
 import Hw2.Log
@@ -10,3 +8,6 @@ parseMessage s = case words s of
   ("I" : t : msg) -> LogMessage Info (read t) (unwords msg)
   ("W" : t : msg) -> LogMessage Warning (read t) (unwords msg)
   _ -> Unknown s
+
+parse :: String -> [LogMessage]
+parse s = map parseMessage (lines s)

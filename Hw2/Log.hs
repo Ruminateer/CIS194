@@ -1,5 +1,3 @@
--- CIS 194 Homework 2
-
 module Hw2.Log where
 
 import Control.Applicative
