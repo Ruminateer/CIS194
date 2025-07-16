@@ -29,3 +29,14 @@ build = foldr insert Leaf
 inOrder :: MessageTree -> [LogMessage]
 inOrder Leaf = []
 inOrder (Node lhs message rhs) = inOrder lhs ++ message : inOrder rhs
+
+isError50Plus :: LogMessage -> Bool
+isError50Plus (LogMessage (Error severity) _ _) = severity >= 50
+isError50Plus _ = False
+
+getMessage :: LogMessage -> String
+getMessage (LogMessage _ _ message) = message
+getMessage (Unknown message) = message
+
+whatWentWrong :: [LogMessage] -> [String]
+whatWentWrong = map getMessage . inOrder . build . filter isError50Plus
