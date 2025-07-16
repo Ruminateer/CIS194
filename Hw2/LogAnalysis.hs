@@ -22,3 +22,10 @@ insert
   (Node lhs curMessage@(LogMessage _ curTime _) rhs)
     | newTime < curTime = Node (insert newMessage lhs) curMessage rhs
     | otherwise = Node lhs curMessage (insert newMessage rhs)
+
+build :: [LogMessage] -> MessageTree
+build = foldr insert Leaf
+
+inOrder :: MessageTree -> [LogMessage]
+inOrder Leaf = []
+inOrder (Node lhs message rhs) = inOrder lhs ++ message : inOrder rhs
