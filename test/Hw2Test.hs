@@ -83,9 +83,36 @@ testInsert =
         )
     ]
 
+testSampleLog :: Test
+testSampleLog =
+  TestCase
+    ( assertEqual
+        "sample.log"
+        [ "Way too many pickles",
+          "Bad pickle-flange interaction detected",
+          "Flange failed!"
+        ]
+        ( whatWentWrong
+            ( parse
+                "I 6 Completed armadillo processing\n\
+                \I 1 Nothing to report\n\
+                \I 4 Everything normal\n\
+                \I 11 Initiating self-destruct sequence\n\
+                \E 70 3 Way too many pickles\n\
+                \E 65 8 Bad pickle-flange interaction detected\n\
+                \W 5 Flange is due for a check-up\n\
+                \I 7 Out for lunch, back in two time steps\n\
+                \E 20 2 Too many pickles\n\
+                \I 9 Back from lunch\n\
+                \E 99 10 Flange failed!"
+            )
+        )
+    )
+
 testAll :: Test
 testAll =
   TestList
     [ TestLabel "test parseMessage" testParseMessage,
-      TestLabel "test insert" testInsert
+      TestLabel "test insert" testInsert,
+      TestLabel "test sample.log" testSampleLog
     ]
