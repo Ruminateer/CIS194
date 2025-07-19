@@ -47,6 +47,7 @@ library
         Hw1.CreditCardValidator
         Hw2.LogAnalysis
         Hw2.Log
+        Hw3.Golf
 
     -- Modules included in this library but not exported.
     -- other-modules:
@@ -74,6 +75,7 @@ test-suite CIS194-test
     other-modules:
         Hw1Test
         Hw2Test
+        Hw3Test
 
     -- LANGUAGE extensions used by modules in this package.
     -- other-extensions:
