@@ -24,6 +24,7 @@ insert
     | otherwise = Node lhs curMessage (insert newMessage rhs)
 
 build :: [LogMessage] -> MessageTree
+-- TODO: foldr vs foldl'?
 build = foldr insert Leaf
 
 inOrder :: MessageTree -> [LogMessage]

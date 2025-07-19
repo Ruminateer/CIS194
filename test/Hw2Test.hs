@@ -86,6 +86,7 @@ testInsert =
 testSampleLog :: Test
 testSampleLog =
   TestCase
+    -- TODO: how to use external file for testing?
     ( assertEqual
         "sample.log"
         [ "Way too many pickles",
