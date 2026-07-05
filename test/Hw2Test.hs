@@ -10,22 +10,16 @@ testParseMessage =
   testGroup
     "parseMessage"
     [ testCase "error"
-        ( assertEqual
-            "parseMessage E 2 562 help help"
-            (LogMessage (Error 2) 562 "help help")
-            (parseMessage "E 2 562 help help")
+        ( (LogMessage (Error 2) 562 "help help")
+            @=? parseMessage "E 2 562 help help"
         ),
       testCase "info"
-        ( assertEqual
-            "parseMessage I 29 la la la"
-            (LogMessage Info 29 "la la la")
-            (parseMessage "I 29 la la la")
+        ( (LogMessage Info 29 "la la la")
+            @=? parseMessage "I 29 la la la"
         ),
       testCase "unknown"
-        ( assertEqual
-            "parseMessage This is not in the right format"
-            (Unknown "This is not in the right format")
-            (parseMessage "This is not in the right format")
+        ( (Unknown "This is not in the right format")
+            @=? parseMessage "This is not in the right format"
         )
     ]
 
@@ -49,27 +43,19 @@ testInsert =
   testGroup
     "insert"
     [ testCase "Unknown to leaf"
-        ( assertEqual
-            "insert Unknown to leaf"
-            Leaf
-            (insert (Unknown "garbage msg") Leaf)
+        ( Leaf
+            @=? insert (Unknown "garbage msg") Leaf
         ),
       testCase "Unknown to sampleTree"
-        ( assertEqual
-            "insert Unknown to sampleTree"
-            sampleTree
-            (insert (Unknown "garbage msg") sampleTree)
+        ( sampleTree
+            @=? insert (Unknown "garbage msg") sampleTree
         ),
       testCase "time=6 to leaf"
-        ( assertEqual
-            "insert time=6 to leaf"
-            (Node Leaf (LogMessage Info 6 "time=6") Leaf)
-            (insert (LogMessage Info 6 "time=6") Leaf)
+        ( (Node Leaf (LogMessage Info 6 "time=6") Leaf)
+            @=? insert (LogMessage Info 6 "time=6") Leaf
         ),
       testCase "time=6 to sampleTree"
-        ( assertEqual
-            "insert time=6 to sampleTree"
-            ( Node
+        ( ( Node
                 ( Node
                     (Node Leaf (LogMessage Warning 2 "t=2") Leaf)
                     (LogMessage Warning 3 "t=3")
@@ -82,7 +68,7 @@ testInsert =
                     (Node Leaf (LogMessage (Error 0) 11 "t=11") Leaf)
                 )
             )
-            (insert (LogMessage Info 6 "time=6") sampleTree)
+            @=? insert (LogMessage Info 6 "time=6") sampleTree
         )
     ]
 
@@ -91,13 +77,11 @@ testSampleLog =
   testCase
     "sample.log"
     -- TODO: how to use external file for testing?
-    ( assertEqual
-        "sample.log"
-        [ "Way too many pickles",
+    ( [ "Way too many pickles",
           "Bad pickle-flange interaction detected",
           "Flange failed!"
         ]
-        ( whatWentWrong
+        @=? whatWentWrong
             ( parse
                 "I 6 Completed armadillo processing\n\
                 \I 1 Nothing to report\n\
@@ -111,7 +95,6 @@ testSampleLog =
                 \I 9 Back from lunch\n\
                 \E 99 10 Flange failed!"
             )
-        )
     )
 
 testAll :: TestTree
