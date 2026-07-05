@@ -8,23 +8,28 @@ testSkips :: TestTree
 testSkips =
   testGroup
     "skips"
-    [ testCase "ABCD"
+    [ testCase
+        "ABCD"
         ( ["ABCD", "BD", "C", "D"]
             @=? skips "ABCD"
         ),
-      testCase "hello!"
+      testCase
+        "hello!"
         ( ["hello!", "el!", "l!", "l", "o", "!"]
             @=? skips "hello!"
         ),
-      testCase "[1]"
+      testCase
+        "[1]"
         ( [[1]]
             @=? skips [1 :: Int]
         ),
-      testCase "[True, False]"
+      testCase
+        "[True, False]"
         ( [[True, False], [False]]
             @=? skips [True, False]
         ),
-      testCase "[]"
+      testCase
+        "[]"
         ( []
             @=? (skips [] :: [[Int]])
         )
@@ -34,15 +39,18 @@ testLocalMaxima :: TestTree
 testLocalMaxima =
   testGroup
     "localMaxima"
-    [ testCase "[2, 9, 5, 6, 1]"
+    [ testCase
+        "[2, 9, 5, 6, 1]"
         ( [9, 6]
             @=? localMaxima [2, 9, 5, 6, 1]
         ),
-      testCase "[2, 3, 4, 1, 5]"
+      testCase
+        "[2, 3, 4, 1, 5]"
         ( [4]
             @=? localMaxima [2, 3, 4, 1, 5]
         ),
-      testCase "[1, 2, 3, 4, 5]"
+      testCase
+        "[1, 2, 3, 4, 5]"
         ( []
             @=? localMaxima [1, 2, 3, 4, 5]
         )
