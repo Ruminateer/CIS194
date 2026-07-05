@@ -91,8 +91,7 @@ test-suite CIS194-test
 
     -- Test dependencies.
     build-depends:
-        HUnit ^>=1.6.2.0,
         base >= 4 && < 5,
-        test-framework,
-        test-framework-hunit,
+        tasty ^>=1.5,
+        tasty-hunit ^>=0.10,
         CIS194

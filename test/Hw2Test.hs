@@ -2,24 +2,26 @@ module Hw2Test where
 
 import Hw2.Log
 import Hw2.LogAnalysis
-import Test.HUnit
+import Test.Tasty
+import Test.Tasty.HUnit
 
-testParseMessage :: Test
+testParseMessage :: TestTree
 testParseMessage =
-  TestList
-    [ TestCase
+  testGroup
+    "parseMessage"
+    [ testCase "error"
         ( assertEqual
             "parseMessage E 2 562 help help"
             (LogMessage (Error 2) 562 "help help")
             (parseMessage "E 2 562 help help")
         ),
-      TestCase
+      testCase "info"
         ( assertEqual
             "parseMessage I 29 la la la"
             (LogMessage Info 29 "la la la")
             (parseMessage "I 29 la la la")
         ),
-      TestCase
+      testCase "unknown"
         ( assertEqual
             "parseMessage This is not in the right format"
             (Unknown "This is not in the right format")
@@ -42,28 +44,29 @@ sampleTree =
         (Node Leaf (LogMessage (Error 0) 11 "t=11") Leaf)
     )
 
-testInsert :: Test
+testInsert :: TestTree
 testInsert =
-  TestList
-    [ TestCase
+  testGroup
+    "insert"
+    [ testCase "Unknown to leaf"
         ( assertEqual
             "insert Unknown to leaf"
             Leaf
             (insert (Unknown "garbage msg") Leaf)
         ),
-      TestCase
+      testCase "Unknown to sampleTree"
         ( assertEqual
             "insert Unknown to sampleTree"
             sampleTree
             (insert (Unknown "garbage msg") sampleTree)
         ),
-      TestCase
+      testCase "time=6 to leaf"
         ( assertEqual
             "insert time=6 to leaf"
             (Node Leaf (LogMessage Info 6 "time=6") Leaf)
             (insert (LogMessage Info 6 "time=6") Leaf)
         ),
-      TestCase
+      testCase "time=6 to sampleTree"
         ( assertEqual
             "insert time=6 to sampleTree"
             ( Node
@@ -83,9 +86,10 @@ testInsert =
         )
     ]
 
-testSampleLog :: Test
+testSampleLog :: TestTree
 testSampleLog =
-  TestCase
+  testCase
+    "sample.log"
     -- TODO: how to use external file for testing?
     ( assertEqual
         "sample.log"
@@ -110,10 +114,11 @@ testSampleLog =
         )
     )
 
-testAll :: Test
+testAll :: TestTree
 testAll =
-  TestList
-    [ TestLabel "test parseMessage" testParseMessage,
-      TestLabel "test insert" testInsert,
-      TestLabel "test sample.log" testSampleLog
+  testGroup
+    "Hw2"
+    [ testParseMessage,
+      testInsert,
+      testSampleLog
     ]

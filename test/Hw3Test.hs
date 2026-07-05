@@ -1,36 +1,38 @@
 module Hw3Test where
 
 import Hw3.Golf
-import Test.HUnit
+import Test.Tasty
+import Test.Tasty.HUnit
 
-testSkips :: Test
+testSkips :: TestTree
 testSkips =
-  TestList
-    [ TestCase
+  testGroup
+    "skips"
+    [ testCase "ABCD"
         ( assertEqual
             "skips ABCD"
             ["ABCD", "BD", "C", "D"]
             (skips "ABCD")
         ),
-      TestCase
+      testCase "hello!"
         ( assertEqual
             "skips hello!"
             ["hello!", "el!", "l!", "l", "o", "!"]
             (skips "hello!")
         ),
-      TestCase
+      testCase "[1]"
         ( assertEqual
             "skips [1]"
             [[1]]
             (skips [1 :: Int])
         ),
-      TestCase
+      testCase "[True, False]"
         ( assertEqual
             "skips [True, False]"
             [[True, False], [False]]
             (skips [True, False])
         ),
-      TestCase
+      testCase "[]"
         ( assertEqual
             "skips []"
             []
@@ -38,22 +40,23 @@ testSkips =
         )
     ]
 
-testLocalMaxima :: Test
+testLocalMaxima :: TestTree
 testLocalMaxima =
-  TestList
-    [ TestCase
+  testGroup
+    "localMaxima"
+    [ testCase "[2, 9, 5, 6, 1]"
         ( assertEqual
             "localMaxima [2, 9, 5, 6, 1]"
             [9, 6]
             (localMaxima [2, 9, 5, 6, 1])
         ),
-      TestCase
+      testCase "[2, 3, 4, 1, 5]"
         ( assertEqual
             "localMaxima [2, 3, 4, 1, 5]"
             [4]
             (localMaxima [2, 3, 4, 1, 5])
         ),
-      TestCase
+      testCase "[1, 2, 3, 4, 5]"
         ( assertEqual
             "localMaxima [1, 2, 3, 4, 5]"
             []
@@ -61,9 +64,10 @@ testLocalMaxima =
         )
     ]
 
-testAll :: Test
+testAll :: TestTree
 testAll =
-  TestList
-    [ TestLabel "test skips" testSkips,
-      TestLabel "test localMaxima" testLocalMaxima
+  testGroup
+    "Hw3"
+    [ testSkips,
+      testLocalMaxima
     ]
