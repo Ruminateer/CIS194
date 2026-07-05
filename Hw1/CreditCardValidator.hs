@@ -6,17 +6,17 @@ toDigitsRev n
   | otherwise = mod n 10 : toDigitsRev (div n 10)
 
 toDigits :: Integer -> [Integer]
-toDigits n = reverse (toDigitsRev n)
+toDigits = reverse . toDigitsRev
 
-doubleEveryOtherLeft :: [Integer] -> [Integer]
-doubleEveryOtherLeft (x : y : zs) = x : y + y : doubleEveryOtherLeft zs
-doubleEveryOtherLeft l = l
+doubleEveryOtherRev :: [Integer] -> [Integer]
+doubleEveryOtherRev (x : y : zs) = x : y + y : doubleEveryOtherRev zs
+doubleEveryOtherRev l = l
 
 doubleEveryOther :: [Integer] -> [Integer]
-doubleEveryOther = reverse . doubleEveryOtherLeft . reverse
+doubleEveryOther = reverse . doubleEveryOtherRev . reverse
 
 sumDigits :: [Integer] -> Integer
-sumDigits = sum . map (sum . toDigitsRev)
+sumDigits = sum . concatMap toDigitsRev
 
 validate :: Integer -> Bool
-validate n = mod (sumDigits (doubleEveryOtherLeft (toDigitsRev n))) 10 == 0
+validate = (== 0) . (`mod` 10) . sumDigits . doubleEveryOtherRev . toDigitsRev

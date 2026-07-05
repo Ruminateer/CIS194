@@ -13,6 +13,9 @@ testToDigitsRev =
       testCase "8537" ([7, 3, 5, 8] @=? toDigitsRev 8537),
       testCase "0" ([] @=? toDigitsRev 0),
       testCase "1" ([1] @=? toDigitsRev 1),
+      testCase "10" ([0, 1] @=? toDigitsRev 10),
+      testCase "100" ([0, 0, 1] @=? toDigitsRev 100),
+      testCase "105" ([5, 0, 1] @=? toDigitsRev 105),
       testCase "-1" ([] @=? toDigitsRev (-1))
     ]
 
@@ -24,6 +27,9 @@ testToDigits =
       testCase "8537" ([8, 5, 3, 7] @=? toDigits 8537),
       testCase "0" ([] @=? toDigits 0),
       testCase "1" ([1] @=? toDigits 1),
+      testCase "10" ([1, 0] @=? toDigits 10),
+      testCase "100" ([1, 0, 0] @=? toDigits 100),
+      testCase "105" ([1, 0, 5] @=? toDigits 105),
       testCase "-1" ([] @=? toDigits (-1))
     ]
 
