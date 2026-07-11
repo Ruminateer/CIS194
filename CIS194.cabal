@@ -31,6 +31,9 @@ build-type:         Simple
 -- Extra doc files to be distributed with the package, such as a CHANGELOG or a README.
 extra-doc-files:    README.md
 
+data-files:
+    test/data/Hw2/sample.log
+
 -- Extra source files to be distributed with the package, such as examples, or a tutorial module.
 -- extra-source-files:
 
@@ -79,6 +82,10 @@ test-suite CIS194-test
         Hw2Test
         Hw3Test
         Hw5Test
+        Paths_CIS194
+
+    autogen-modules:
+        Paths_CIS194
 
     -- LANGUAGE extensions used by modules in this package.
     -- other-extensions:
