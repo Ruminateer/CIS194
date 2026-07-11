@@ -1,7 +1,5 @@
 module Hw2.Log where
 
-import Control.Applicative
-
 data MessageType
   = Info
   | Warning

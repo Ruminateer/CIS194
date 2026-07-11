@@ -19,17 +19,15 @@ parseMessage s = case words s of
   _ -> Unknown s
 
 parse :: String -> [LogMessage]
-parse s = map parseMessage (lines s)
+parse = map parseMessage . lines
 
 insert :: LogMessage -> MessageTree -> MessageTree
 insert (Unknown _) tree = tree
 insert newMessage Leaf = Node Leaf newMessage Leaf
 insert _ (Node _ (Unknown _) _) = throw (userError "MessageTree contains Unknown")
-insert
-  newMessage@(LogMessage _ newTime _)
-  (Node lhs curMessage@(LogMessage _ curTime _) rhs)
-    | newTime < curTime = Node (insert newMessage lhs) curMessage rhs
-    | otherwise = Node lhs curMessage (insert newMessage rhs)
+insert newMessage@(LogMessage _ newTime _) (Node lhs curMessage@(LogMessage _ curTime _) rhs)
+  | newTime < curTime = Node (insert newMessage lhs) curMessage rhs
+  | otherwise = Node lhs curMessage (insert newMessage rhs)
 
 build :: [LogMessage] -> MessageTree
 -- TODO: foldr vs foldl'?
