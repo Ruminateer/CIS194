@@ -2,12 +2,20 @@ module Hw2.LogAnalysis where
 
 import Control.Exception
 import Hw2.Log
+import Text.Read
 
 parseMessage :: String -> LogMessage
 parseMessage s = case words s of
-  ("E" : severity : t : msg) -> LogMessage (Error (read severity)) (read t) (unwords msg)
-  ("I" : t : msg) -> LogMessage Info (read t) (unwords msg)
-  ("W" : t : msg) -> LogMessage Warning (read t) (unwords msg)
+  ("E" : sv : t : msg)
+    | Just time <- readMaybe t,
+      Just severity <- readMaybe sv ->
+        LogMessage (Error severity) time (unwords msg)
+  ("I" : t : msg)
+    | Just time <- readMaybe t ->
+        LogMessage Info time (unwords msg)
+  ("W" : t : msg)
+    | Just time <- readMaybe t ->
+        LogMessage Warning time (unwords msg)
   _ -> Unknown s
 
 parse :: String -> [LogMessage]
