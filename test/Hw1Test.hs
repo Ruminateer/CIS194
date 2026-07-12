@@ -93,6 +93,15 @@ testHanoi =
       testCase "0 disks" ([] @=? hanoi 0 "i" "j" "k")
     ]
 
+testHanoiAcc :: TestTree
+testHanoiAcc =
+  testGroup
+    "hanoiAcc"
+    [ testCase (show n ++ " disks") $
+        hanoi n "a" "b" "c" @=? hanoiAcc n "a" "b" "c"
+    | n <- [-1 .. 10]
+    ]
+
 testAll :: TestTree
 testAll =
   testGroup
@@ -102,5 +111,6 @@ testAll =
       testDoubleEveryOther,
       testSumDigits,
       testValidate,
-      testHanoi
+      testHanoi,
+      testHanoiAcc
     ]
