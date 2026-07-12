@@ -88,6 +88,8 @@ testHanoi =
             @=? hanoi 3 "a" "b" "c"
         ),
       testCase "1 disk" ([("x", "y")] @=? hanoi 1 "x" "y" "z"),
+      localOption (mkTimeout 1000000) $
+        testCase "negative disks" ([] @=? hanoi (-1) "i" "j" "k"),
       testCase "0 disks" ([] @=? hanoi 0 "i" "j" "k")
     ]
 
