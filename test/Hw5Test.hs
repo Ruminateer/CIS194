@@ -2,8 +2,17 @@ module Hw5Test where
 
 import Hw5.Calc
 import Hw5.ExprT
+import Hw5.Parser
 import Test.Tasty
 import Test.Tasty.HUnit
+
+testAll :: TestTree
+testAll =
+  testGroup
+    "Hw5"
+    [ testEval,
+      testExprInstances
+    ]
 
 testEval :: TestTree
 testEval =
@@ -31,9 +40,23 @@ testEval =
         )
     ]
 
-testAll :: TestTree
-testAll =
+testExp :: (Expr a) => Maybe a
+testExp = parseExp lit add mul "(3 * -4) + 5"
+
+testExprInstances :: TestTree
+testExprInstances =
   testGroup
-    "Hw5"
-    [ testEval
+    "Expr instances"
+    [ testCase
+        "Integer"
+        ((Just (-7)) @=? (testExp :: Maybe Integer)),
+      testCase
+        "Bool"
+        ((Just True) @=? (testExp :: Maybe Bool)),
+      testCase
+        "MinMax"
+        ((Just (MinMax 5)) @=? (testExp :: Maybe MinMax)),
+      testCase
+        "Mod7"
+        ((Just (Mod7 0)) @=? (testExp :: Maybe Mod7))
     ]

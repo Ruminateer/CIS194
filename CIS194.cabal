@@ -53,6 +53,7 @@ library
         Hw3.Golf
         Hw5.Calc
         Hw5.ExprT
+        Hw5.Parser
 
     -- Modules included in this library but not exported.
     -- other-modules:
