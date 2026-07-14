@@ -6,8 +6,6 @@ module Hw5.Parser (parseExp) where
 import Control.Applicative hiding (Const)
 import Control.Arrow
 import Data.Char
-import Data.List (foldl')
-import Data.Monoid
 
 -- Building block of a computation with some state of type @s@
 -- threaded through it, possibly resulting in a value of type @r@
@@ -44,7 +42,7 @@ digit :: Parser Integer
 digit = State $ parseDigit
   where
     parseDigit [] = Nothing
-    parseDigit s@(c : cs)
+    parseDigit (c : cs)
       | isDigit c = Just (fromIntegral $ digitToInt c, cs)
       | otherwise = Nothing
 
@@ -59,7 +57,7 @@ space :: Parser ()
 space = State $ parseSpace
   where
     parseSpace [] = Nothing
-    parseSpace s@(c : cs)
+    parseSpace (c : cs)
       | isSpace c = Just ((), cs)
       | otherwise = Nothing
 

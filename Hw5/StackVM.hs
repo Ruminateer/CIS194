@@ -55,5 +55,3 @@ execute (BVal s1 : BVal s2 : ss) (Or : xs) = execute (s' : ss) xs
     s' = BVal (s1 || s2)
 execute (_ : _ : _) (Or : _) = errType "Or"
 execute _ (Or : _) = errUnderflow "Or"
-
-test = stackVM [PushI 3, PushI 5, Add]
