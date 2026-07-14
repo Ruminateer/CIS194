@@ -1,15 +1,17 @@
 {-# LANGUAGE FlexibleInstances #-}
+{-# LANGUAGE InstanceSigs #-}
 
 module Hw5.Calc where
 
-import Hw5.ExprT
+import qualified Data.Map as M
+import qualified Hw5.ExprT as ET
 import Hw5.Parser
 import qualified Hw5.StackVM as VM
 
-eval :: ExprT -> Integer
-eval (Lit n) = n
-eval (Add e1 e2) = eval e1 + eval e2
-eval (Mul e1 e2) = eval e1 * eval e2
+eval :: ET.ExprT -> Integer
+eval (ET.Lit n) = n
+eval (ET.Add e1 e2) = eval e1 + eval e2
+eval (ET.Mul e1 e2) = eval e1 * eval e2
 
 evalStr :: String -> Maybe Integer
 evalStr = parseExp lit add mul
@@ -19,10 +21,10 @@ class Expr e where
   add :: e -> e -> e
   mul :: e -> e -> e
 
-instance Expr ExprT where
-  lit = Lit
-  add = Add
-  mul = Mul
+instance Expr ET.ExprT where
+  lit = ET.Lit
+  add = ET.Add
+  mul = ET.Mul
 
 instance Expr Integer where
   lit = id
@@ -55,3 +57,32 @@ instance Expr VM.Program where
 
 compile :: String -> Maybe VM.Program
 compile = parseExp lit add mul
+
+class HasVars a where
+  var :: String -> a
+
+data VarExprT
+  = Lit Integer
+  | Add VarExprT VarExprT
+  | Mul VarExprT VarExprT
+  | Var String
+  deriving (Show, Eq)
+
+instance HasVars VarExprT where
+  var = Var
+
+instance Expr VarExprT where
+  lit = Lit
+  add = Add
+  mul = Mul
+
+instance HasVars (M.Map String Integer -> Maybe Integer) where
+  var = M.lookup
+
+instance Expr (M.Map String Integer -> Maybe Integer) where
+  lit = const . Just
+  add = liftA2 (liftA2 (+))
+  mul = liftA2 (liftA2 (*))
+
+withVars :: [(String, Integer)] -> (M.Map String Integer -> Maybe Integer) -> Maybe Integer
+withVars vs expr = expr $ M.fromList vs

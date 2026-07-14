@@ -15,7 +15,8 @@ testAll =
       exercise2Tests,
       exercise3Tests,
       exercise4Tests,
-      exercise5Tests
+      exercise5Tests,
+      exercise6Tests
     ]
 
 exercise1Tests :: TestTree
@@ -217,3 +218,57 @@ assertCompiledResult input expected =
       case VM.stackVM program of
         Right (VM.IVal actual) -> actual @?= expected
         result -> assertFailure ("compiled program produced " ++ show result)
+
+exercise6Tests :: TestTree
+exercise6Tests =
+  testGroup
+    "Exercise 6: expressions with variables"
+    [ varExprTTests,
+      variableEvaluationTests
+    ]
+
+varExprTTests :: TestTree
+varExprTTests =
+  testGroup
+    "VarExprT instances"
+    [ testCase "supports literals and variables" $
+        constructionCount [lit 3, var "x"] @?= 2,
+      testCase "supports addition and multiplication" $
+        constructionCount
+          [ add (lit 3) (var "x"),
+            mul (var "x") (add (var "y") (lit (-2)))
+          ]
+          @?= 2
+    ]
+  where
+    -- The assignment does not prescribe constructor names or require Eq/Show for
+    -- VarExprT, so these tests intentionally check its public class interface only.
+    constructionCount :: [VarExprT] -> Int
+    constructionCount = length
+
+variableEvaluationTests :: TestTree
+variableEvaluationTests =
+  testGroup
+    "Map-based interpretation"
+    [ testCase "a variable looks up its value" $
+        withVars [("x", 6)] (var "x") @?= Just 6,
+      testCase "an unknown variable produces Nothing" $
+        withVars [("x", 6)] (var "y") @?= Nothing,
+      testCase "a literal does not require any variables" $
+        withVars [] (lit (-4)) @?= Just (-4),
+      testCase "addition combines a literal and a variable" $
+        withVars [("x", 6)] (add (lit 3) (var "x")) @?= Just 9,
+      testCase "multiplication combines two variables" $
+        withVars [("x", 6), ("y", 3)] (mul (var "x") (var "y"))
+          @?= Just 18,
+      testCase "nested expressions can reuse stored values" $
+        withVars [("x", 6), ("y", 3)]
+          (mul (var "x") (add (var "y") (var "x")))
+          @?= Just 54,
+      testCase "a missing variable propagates through addition" $
+        withVars [("x", 6)] (add (var "x") (var "missing")) @?= Nothing,
+      testCase "a missing variable propagates through multiplication" $
+        withVars [("x", 6)] (mul (var "missing") (var "x")) @?= Nothing,
+      testCase "withVars uses the last value for a duplicate name" $
+        withVars [("x", 1), ("x", 7)] (var "x") @?= Just 7
+    ]
