@@ -180,6 +180,28 @@ exercise5Tests =
         assertCompiledResult "2+3*4" 14,
       testCase "compiled negative literals execute correctly" $
         assertCompiledResult "(3 * -4) + 5" (-7),
+      testCase "a deeply nested expression preserves instruction order" $
+        assertCompiledProgram
+          "-2 * (3 + 4 * (5 + -6))"
+          [ VM.PushI (-2),
+            VM.PushI 3,
+            VM.PushI 4,
+            VM.PushI 5,
+            VM.PushI (-6),
+            VM.Add,
+            VM.Mul,
+            VM.Add,
+            VM.Mul
+          ],
+      testCase "compiled programs agree with direct evaluation" $
+        mapM_
+          assertCompileAgreesWithEval
+          [ "42",
+            "2+3*4",
+            "(2+3)*4",
+            "(3 * -4) + 5",
+            "-2 * (3 + 4 * (5 + -6))"
+          ],
       testCase "compile rejects malformed input" $
         case compile "2+3*" of
           Nothing -> pure ()
@@ -219,6 +241,22 @@ assertCompiledResult input expected =
         Right (VM.IVal actual) -> actual @?= expected
         result -> assertFailure ("compiled program produced " ++ show result)
 
+assertCompileAgreesWithEval :: String -> Assertion
+assertCompileAgreesWithEval input =
+  case (evalStr input, compile input) of
+    (Just expected, Just program) ->
+      case VM.stackVM program of
+        Right (VM.IVal actual) -> actual @?= expected
+        result -> assertFailure ("compiled program produced " ++ show result)
+    result -> assertFailure ("expression was unexpectedly rejected: " ++ showResult result)
+  where
+    -- Stack values and instructions intentionally have no Eq instances, so keep
+    -- the failure message focused on which side rejected the valid expression.
+    showResult (Nothing, Nothing) = "both evaluators rejected it"
+    showResult (Nothing, Just _) = "evalStr rejected it"
+    showResult (Just _, Nothing) = "compile rejected it"
+    showResult (Just _, Just _) = "unreachable"
+
 exercise6Tests :: TestTree
 exercise6Tests =
   testGroup
@@ -233,6 +271,9 @@ varExprTTests =
     "VarExprT instances"
     [ testCase "supports literals and variables" $
         constructionCount [lit 3, var "x"] @?= 2,
+      testCase "constructs the expected nested expression tree" $
+        mul (var "x") (add (lit (-2)) (var "y"))
+          @?= Mul (Var "x") (Add (Lit (-2)) (Var "y")),
       testCase "supports addition and multiplication" $
         constructionCount
           [ add (lit 3) (var "x"),
@@ -262,9 +303,20 @@ variableEvaluationTests =
         withVars [("x", 6), ("y", 3)] (mul (var "x") (var "y"))
           @?= Just 18,
       testCase "nested expressions can reuse stored values" $
-        withVars [("x", 6), ("y", 3)]
+        withVars
+          [("x", 6), ("y", 3)]
           (mul (var "x") (add (var "y") (var "x")))
           @?= Just 54,
+      testCase "deep expressions combine several variables and reuse values" $
+        withVars
+          [("x", 2), ("y", 3), ("z", 4)]
+          (mul (add (var "x") (mul (var "y") (var "z"))) (add (var "x") (lit (-1))))
+          @?= Just 14,
+      testCase "a deeply nested missing variable propagates to the result" $
+        withVars
+          [("x", 2), ("y", 3)]
+          (mul (add (var "x") (mul (var "y") (var "missing"))) (lit 10))
+          @?= Nothing,
       testCase "a missing variable propagates through addition" $
         withVars [("x", 6)] (add (var "x") (var "missing")) @?= Nothing,
       testCase "a missing variable propagates through multiplication" $
