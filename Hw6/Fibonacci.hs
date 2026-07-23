@@ -51,7 +51,11 @@ streamFromSeed fn seed = seed :> streamFromSeed fn (fn seed)
 nats :: Stream Integer
 nats = streamFromSeed (+ 1) 0
 
--- TODO: ruler :: Stream Integer
+interleaveStreams :: Stream Integer -> Stream Integer -> Stream Integer
+interleaveStreams (a :> as) (b :> bs) = a :> b :> interleaveStreams as bs
+
+ruler :: Stream Integer
+ruler = interleaveStreams (streamRepeat 0) (fmap (+ 1) ruler)
 
 -- Exercise 6
 
