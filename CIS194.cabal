@@ -55,6 +55,7 @@ library
         Hw5.ExprT
         Hw5.Parser
         Hw5.StackVM
+        Hw6.Fibonacci
 
     -- Modules included in this library but not exported.
     -- other-modules:
