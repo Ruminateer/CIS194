@@ -75,3 +75,26 @@ instance Fractional (Stream Integer) where
 
 fibs3 :: Stream Integer
 fibs3 = x / (1 - x - x * x)
+
+-- Exercise 7
+
+data Matrix = Matrix Integer Integer Integer Integer
+
+instance Num Matrix where
+  fromInteger n = Matrix n 0 0 n
+  (Matrix a0 a1 b0 b1) + (Matrix c0 c1 d0 d1) =
+    Matrix (a0 + c0) (a1 + c1) (b0 + d0) (b1 + d1)
+  (Matrix a0 a1 b0 b1) * (Matrix c0 c1 d0 d1) =
+    Matrix
+      (a0 * c0 + a1 * d0)
+      (a0 * c1 + a1 * d1)
+      (b0 * c0 + b1 * d0)
+      (b0 * c1 + b1 * d1)
+
+fibMatrix :: Matrix
+fibMatrix = Matrix 1 1 1 0
+
+fib4 :: Integer -> Integer
+fib4 n = fn
+  where
+    Matrix _ fn _ _ = fibMatrix ^ n
