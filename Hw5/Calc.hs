@@ -1,5 +1,4 @@
 {-# LANGUAGE FlexibleInstances #-}
-{-# LANGUAGE InstanceSigs #-}
 
 module Hw5.Calc where
 
@@ -8,13 +7,19 @@ import qualified Hw5.ExprT as ET
 import Hw5.Parser
 import qualified Hw5.StackVM as VM
 
+-- Exercise 1
+
 eval :: ET.ExprT -> Integer
 eval (ET.Lit n) = n
 eval (ET.Add e1 e2) = eval e1 + eval e2
 eval (ET.Mul e1 e2) = eval e1 * eval e2
 
+-- Exercise 2
+
 evalStr :: String -> Maybe Integer
 evalStr = parseExp lit add mul
+
+-- Exercise 3
 
 class Expr e where
   lit :: Integer -> e
@@ -25,6 +30,8 @@ instance Expr ET.ExprT where
   lit = ET.Lit
   add = ET.Add
   mul = ET.Mul
+
+-- Exercise 4
 
 instance Expr Integer where
   lit = id
@@ -50,6 +57,8 @@ instance Expr Mod7 where
   add (Mod7 lhs) (Mod7 rhs) = lit (lhs + rhs)
   mul (Mod7 lhs) (Mod7 rhs) = lit (lhs * rhs)
 
+-- Exercise 5
+
 instance Expr VM.Program where
   lit n = [VM.PushI n]
   add lhs rhs = lhs ++ rhs ++ [VM.Add]
@@ -57,6 +66,8 @@ instance Expr VM.Program where
 
 compile :: String -> Maybe VM.Program
 compile = parseExp lit add mul
+
+-- Exercise 6
 
 class HasVars a where
   var :: String -> a
