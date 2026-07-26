@@ -52,7 +52,7 @@ nats :: Stream Integer
 nats = streamFromSeed (+ 1) 0
 
 interleaveStreams :: Stream Integer -> Stream Integer -> Stream Integer
-interleaveStreams (a :> as) (b :> bs) = a :> b :> interleaveStreams as bs
+interleaveStreams (a :> as) bs = a :> interleaveStreams bs as
 
 ruler :: Stream Integer
 ruler = interleaveStreams (streamRepeat 0) (fmap (+ 1) ruler)
@@ -66,7 +66,7 @@ instance Num (Stream Integer) where
   fromInteger n = n :> streamRepeat 0
   negate = fmap (* (-1))
   (a :> as) + (b :> bs) = (a + b) :> (as + bs)
-  (a :> as) * (b :> bs) = a * b :> fmap (* a) bs + fmap (* b) as + as * bs
+  (a :> as) * bAll@(b :> bs) = a * b :> fmap (* a) bs + as * bAll
 
 instance Fractional (Stream Integer) where
   (a :> as) / (b :> bs) = q
