@@ -49,9 +49,9 @@ streamFromSeed fn seed = seed :> streamFromSeed fn (fn seed)
 -- Exercise 5
 
 nats :: Stream Integer
-nats = streamFromSeed (+ 1) 0
+nats = streamFromSeed succ 0
 
-interleaveStreams :: Stream Integer -> Stream Integer -> Stream Integer
+interleaveStreams :: Stream a -> Stream a -> Stream a
 interleaveStreams (a :> as) bs = a :> interleaveStreams bs as
 
 ruler :: Stream Integer
@@ -64,7 +64,7 @@ x = 0 :> 1 :> streamRepeat 0
 
 instance Num (Stream Integer) where
   fromInteger n = n :> streamRepeat 0
-  negate = fmap (* (-1))
+  negate = fmap negate
   (a :> as) + (b :> bs) = (a + b) :> (as + bs)
   (a :> as) * bAll@(b :> bs) = a * b :> fmap (* a) bs + as * bAll
 
@@ -82,6 +82,8 @@ data Matrix = Matrix Integer Integer Integer Integer
 
 instance Num Matrix where
   fromInteger n = Matrix n 0 0 n
+  negate (Matrix a0 a1 b0 b1) =
+    Matrix (negate a0) (negate a1) (negate b0) (negate b1)
   (Matrix a0 a1 b0 b1) + (Matrix c0 c1 d0 d1) =
     Matrix (a0 + c0) (a1 + c1) (b0 + d0) (b1 + d1)
   (Matrix a0 a1 b0 b1) * (Matrix c0 c1 d0 d1) =
