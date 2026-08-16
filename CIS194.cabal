@@ -56,6 +56,8 @@ library
         Hw5.Parser
         Hw5.StackVM
         Hw6.Fibonacci
+        Hw7.JoinList
+        Hw7.Sized
 
     -- Modules included in this library but not exported.
     -- other-modules:
@@ -89,6 +91,7 @@ test-suite CIS194-test
         Hw3Test
         Hw5Test
         Hw6Test
+        Hw7Test
         Paths_CIS194
 
     autogen-modules:

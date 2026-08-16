@@ -5,6 +5,7 @@ import Hw2Test
 import Hw3Test
 import Hw5Test
 import Hw6Test
+import Hw7Test
 import Test.Tasty
 
 main :: IO ()
@@ -16,5 +17,6 @@ main =
         Hw2Test.testAll,
         Hw3Test.testAll,
         Hw5Test.testAll,
-        Hw6Test.testAll
+        Hw6Test.testAll,
+        Hw7Test.testAll
       ]
